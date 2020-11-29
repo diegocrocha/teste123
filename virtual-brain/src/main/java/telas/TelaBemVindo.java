@@ -26,15 +26,15 @@ public class TelaBemVindo extends javax.swing.JFrame {
      * Creates new form TelaBemVindo
      */
     public TelaBemVindo() throws SQLException, IOException{
-        Leituras leitura = new Leituras();
-        String hostname = leitura.getHostname();
-        
-        if (hostname.equals("6811b44a5f14")){
-            conexao.ConexaoMarise config = new conexao.ConexaoMarise();
-            JdbcTemplate con = new JdbcTemplate(config.getDatasource());
-            Cpu cpu = new Cpu();
-           con.update("INSERT INTO leituras VALUES (null, ? , getdate(), 1)", cpu.usoCpu());
-        }
+//        Leituras leitura = new Leituras();
+//        String hostname = leitura.getHostname();
+//        
+//        if (hostname.equals("6811b44a5f14")){
+//            conexao.ConexaoMarise config = new conexao.ConexaoMarise();
+//            JdbcTemplate con = new JdbcTemplate(config.getDatasource());
+//            Cpu cpu = new Cpu();
+//           con.update("INSERT INTO leituras VALUES (null, ? , getdate(), 1)", cpu.usoCpu());
+//        }
         initComponents();
     }
 

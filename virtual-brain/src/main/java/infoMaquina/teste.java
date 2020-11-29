@@ -2,6 +2,7 @@ package infoMaquina;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import oshi.util.FormatUtil;
 
 public class teste {
@@ -31,12 +32,20 @@ public class teste {
         System.out.println("------------------------");
         System.out.println(processos.printProcessos().toString());
         System.out.println("------------------------");
-        while (true) {            
-            System.out.println(cpu.usoCpu());
-         try {
-            Thread.sleep(5000);
-        } catch (Exception e) {
-        }}
-
+//        while (true) {            
+//            System.out.println(cpu.usoCpu());
+//         try {
+//            Thread.sleep(5000);
+//        } catch (Exception e) {
+//        }}
+        
+//        String hostname = "";
+//        hostname = lt.getHostname();
+        
+        if (lt.getHostname().equals("6811b44a5f14")){
+            conexao.ConexaoMarise config = new conexao.ConexaoMarise();
+            JdbcTemplate con = new JdbcTemplate(config.getDatasource());
+           con.update("INSERT INTO leituras VALUES (null, ? , getdate(), 1)", cpu.usoCpu());
+        }
     }
 }
