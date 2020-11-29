@@ -95,7 +95,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>infoMaquina.teste.java</mainClass>
+                            <mainClass>infoMaquina.teste</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>dependency-jars/</classpathPrefix>
                         </manifest>
