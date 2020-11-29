@@ -7,7 +7,7 @@ import oshi.util.FormatUtil;
 
 public class teste {
 
-    public static void main(String[] args) throws SQLException, IOException {
+    public static void main(String[] args) throws SQLException, IOException, InterruptedException {
         SistemaOperacional sistema = new SistemaOperacional();
         Processador processador = new Processador();
         Disco disc = new Disco();
@@ -44,10 +44,16 @@ public class teste {
         if (lt.getHostname().equals("6811b44a5f14")) {
             conexao.ConexaoMarise config = new conexao.ConexaoMarise();
             JdbcTemplate con = new JdbcTemplate(config.getDatasource());
-            for (int i = 0; i < 10; i++) {
-                con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 1)", String.valueOf(cpu.usoCpu()));
-                con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 2)", String.valueOf(mem.usoMemoria()));
+            Integer i = 0;
+            while (i<10) {
+                Double valorCPU = cpu.usoCpu();
+                Double valorMemoria = mem.usoMemoria();
+                System.out.println("Inserindo dados de CPU\nValor: " + valorCPU.toString());
+                con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 1)", String.valueOf(valorCPU));
+                System.out.println("Inserindo dados de Memória\nValor: " + valorMemoria);
+                con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 2)", String.valueOf(valorMemoria));
                 
+                Thread.sleep(1000);
             }
         }
     }
