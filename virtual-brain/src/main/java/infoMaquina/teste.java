@@ -45,7 +45,7 @@ public class teste {
         if (lt.getHostname().equals("6811b44a5f14")){
             conexao.ConexaoMarise config = new conexao.ConexaoMarise();
             JdbcTemplate con = new JdbcTemplate(config.getDatasource());
-           con.update("INSERT INTO leituras VALUES (null, ? , GETDATE(), 1)", String.valueOf(cpu.usoCpu()));
+           con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 1)", String.valueOf(cpu.usoCpu()));
         }
     }
 }
