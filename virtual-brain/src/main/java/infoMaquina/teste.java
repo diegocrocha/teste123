@@ -54,7 +54,7 @@ public class teste {
                 con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 1)", df.format(valorCPU).replace(',', '.'));
                 System.out.println("Inserindo dados de Memória\nValor: " + valorMemoria);
                 con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 2)", df.format(valorMemoria).replace(',', '.'));
-                
+                i ++;
                 Thread.sleep(1000);
             }
         }
