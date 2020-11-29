@@ -2,6 +2,7 @@ package infoMaquina;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import org.springframework.jdbc.core.JdbcTemplate;
 import oshi.util.FormatUtil;
 
@@ -45,13 +46,14 @@ public class teste {
             conexao.ConexaoMarise config = new conexao.ConexaoMarise();
             JdbcTemplate con = new JdbcTemplate(config.getDatasource());
             Integer i = 0;
+            DecimalFormat df = new DecimalFormat("#.##");
             while (i<10) {
                 Double valorCPU = cpu.usoCpu();
                 Double valorMemoria = mem.usoMemoria();
                 System.out.println("Inserindo dados de CPU\nValor: " + valorCPU.toString());
-                con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 1)", String.valueOf(valorCPU));
+                con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 1)", df.format(valorCPU).replace(',', '.'));
                 System.out.println("Inserindo dados de Memória\nValor: " + valorMemoria);
-                con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 2)", String.valueOf(valorMemoria));
+                con.update("INSERT INTO leituras VALUES (null, ? , NOW(), 2)", df.format(valorMemoria).replace(',', '.'));
                 
                 Thread.sleep(1000);
             }
