@@ -42,7 +42,7 @@ public class teste {
 
 //        String hostname = "";
 //        hostname = lt.getHostname();
-        if (lt.getHostname().equals("6811b44a5f14") || lt.getHostname().equals("60844ea62bb5") || lt.getHostname().equals("6a40c858a5f4")) {
+        if (lt.getHostname().equals("6811b44a5f14") || lt.getHostname().equals("60844ea62bb5") || lt.getHostname().equals("6a40c858a5f4") || lt.getHostname().equals("9e2472edc382")) {
             conexao.ConexaoMarise config = new conexao.ConexaoMarise();
             JdbcTemplate con = new JdbcTemplate(config.getDatasource());
             Integer i = 0;
