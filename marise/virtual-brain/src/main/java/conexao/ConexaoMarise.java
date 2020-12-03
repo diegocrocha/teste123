@@ -17,7 +17,7 @@ public class ConexaoMarise {
         this.datasource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 
 //        this.datasource.setUrl("jdbc:h2:file:./meu_banco");
-        this.datasource.setUrl("jdbc:mysql://localhost:3306/virtualbrain");
+        this.datasource.setUrl("jdbc:mysql://172.17.0.2/16:3306/virtualbrain");
 
 //        this.datasource.setUsername("sa");
         this.datasource.setUsername("root");

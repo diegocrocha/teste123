@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>7.2.2.jre11</version>
+            <version>7.2.2.jre8</version>
             <!-- ou versão 7.2.2.jre8, se sua JDK for a 8 -->
             <!-- ou versão que já existir na .m2 local -->
         </dependency>
