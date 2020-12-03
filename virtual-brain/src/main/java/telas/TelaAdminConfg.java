@@ -1,6 +1,10 @@
 package telas;
 
+import infoMaquina.Log;
 import java.awt.Color;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -245,7 +249,7 @@ public class TelaAdminConfg extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-       
+
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -265,9 +269,15 @@ public class TelaAdminConfg extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField5ActionPerformed
 
     private void lblDashMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDashMouseClicked
-        TelaAdminDash telaAdminDash = new TelaAdminDash();
-        telaAdminDash.show();
-        dispose();
+        try {
+            Log.errosLog("INFO: ", "ACESSANDO DASHBOARD");
+            TelaAdminDash telaAdminDash = new TelaAdminDash();
+            telaAdminDash.show();
+            dispose();
+        } catch (IOException ex) {
+            Logger.getLogger(TelaAdminConfg.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_lblDashMouseClicked
 
     private void lblSairMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSairMouseEntered
@@ -275,9 +285,14 @@ public class TelaAdminConfg extends javax.swing.JFrame {
     }//GEN-LAST:event_lblSairMouseEntered
 
     private void lblSairMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSairMouseClicked
-        TelaLogin telaLogin = new TelaLogin();
-        telaLogin.show();
-        dispose();
+        try {
+            Log.finishLog();
+            TelaLogin telaLogin = new TelaLogin();
+            telaLogin.show();
+            dispose();
+        } catch (IOException ex) {
+            Logger.getLogger(TelaAdminConfg.class.getName()).log(Level.SEVERE, "ERRO AO FINALIZAR APLICAÇAO", ex);
+        }
     }//GEN-LAST:event_lblSairMouseClicked
 
     private void lblSairMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSairMousePressed
@@ -311,7 +326,7 @@ public class TelaAdminConfg extends javax.swing.JFrame {
     }//GEN-LAST:event_lblGraficoMouseClicked
 
     private void lblGraficoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblGraficoMouseEntered
-         lblGrafico.setForeground(Color.decode("#FF8C42"));
+        lblGrafico.setForeground(Color.decode("#FF8C42"));
     }//GEN-LAST:event_lblGraficoMouseEntered
 
     private void lblGraficoMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblGraficoMouseExited

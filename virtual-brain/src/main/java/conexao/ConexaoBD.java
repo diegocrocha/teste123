@@ -9,36 +9,35 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
  * @author Gabriel Bezerra
  */
-public class ConexaoBD {
-//    private BasicDataSource datasource;
+public final class ConexaoBD {
     
-    /**
-     *
-     * @throws java.sql.SQLException
-     */
-    public String conexao() throws SQLException{
-         String conexaoURL = "jdbc:sqlserver://grupo4.database.windows.net;database=virtual;user=adimin;password=#Gfgrupo4";
-         return conexaoURL;
-//      this.datasource = new BasicDataSource();;
-//        this.datasource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-//        this.datasource.setUrl("jdbc:sqlserver://grupo4.database.windows.net;database=virtual");        
-//        this.datasource.setUsername("adimin");
-//        this.datasource.setPassword("#Gfgrupo4");
-            
+    Connection con;
+    Statement stmt;
+
+    public ConexaoBD() throws SQLException {
+        this.con = DriverManager.getConnection(conexao());
+        this.stmt = con.createStatement();
     }
-            
-    /**
-     *
-     * @return
-     */
-//    public BasicDataSource getDatasource(){
-//        return datasource;
-//    }
+    
+    public String conexao() throws SQLException {
+
+        String conexaoURL = "jdbc:sqlserver://grupo4.database.windows.net;database=virtual;user=adimin;password=#Gfgrupo4";
+        return conexaoURL;
+    }
+
+    public Connection getCon() {
+        return con;
+    }
+
+    public Statement getStmt() {
+        return stmt;
+    }
+    
+    
+
 }

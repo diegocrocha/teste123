@@ -1,7 +1,11 @@
 package telas;
 
+import infoMaquina.Log;
+import conexao.ConexaoBD;
+import infoMaquina.CadastrarMaquina;
 import java.awt.Color;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -154,24 +158,41 @@ public class TelaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
+        
         String usuario = txtUsuario.getText();
         String senha = txtSenha.getText();
-
-        if (usuario.equalsIgnoreCase("admin")) {
+        
+        try {
+            Log.startLog();
+            if (usuario.equalsIgnoreCase("admin")) {
             TelaAdminDash telaAdmDash = new TelaAdminDash();
             telaAdmDash.show();
             dispose();
         } else {
-            TelaBemVindo telaBemVindo = null;
+            
             try {
-                telaBemVindo = new TelaBemVindo();
-            } catch (SQLException ex) {
-                Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
+                
+                conexao.ConexaoBD con = new ConexaoBD();
+
+                ResultSet user = con.getStmt().executeQuery(String.format("SELECT * FROM [dbo].[Funcionario] WHERE nomeFuncionario = '%s'", usuario));
+                
+                TelaBemVindo telaBemVindo = null;
+                
+                while (user.next()) {
+                    if (user.getString("nomeFuncionario").equals(usuario)) {
+                        telaBemVindo = new TelaBemVindo(usuario, user.getInt("IdFuncionario"));
+                    }
+                }
+                telaBemVindo.show();
+                dispose();
             } catch (IOException ex) {
                 Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
             }
-            telaBemVindo.show();
-            dispose();
+        }
+        } catch (IOException ex) {
+            Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE,"ERRO AO INICIAR APLICAÇÃO", ex);
         }
     }//GEN-LAST:event_btnEntrarActionPerformed
 

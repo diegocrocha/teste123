@@ -22,6 +22,11 @@ public class Memoria {
     public double usoMemoria(){
         try {
             memUsage = Double.valueOf(100 - (memory.getAvailable() * 100) / (memory.getTotal()));
+            if (memUsage > 0) {
+                Log.errosLog("AVISO: ", "MEMORIA ACIMA DE 80% ");
+            }else if (memUsage > 60) {
+                Log.errosLog("CRITICO: ", "MEMORIA ACIMA DE 60% ");
+            }
         } catch (Exception e) {
         }
         return memUsage;

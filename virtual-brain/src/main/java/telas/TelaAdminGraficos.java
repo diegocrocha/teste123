@@ -5,7 +5,11 @@
  */
 package telas;
 
+import infoMaquina.Log;
 import java.awt.Color;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.border.Border;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
@@ -350,9 +354,14 @@ public class TelaAdminGraficos extends javax.swing.JFrame {
     }//GEN-LAST:event_lblCadastroMouseClicked
 
     private void lblSairMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSairMouseClicked
-        TelaLogin telaLogin = new TelaLogin();
-        telaLogin.show();
-        dispose();
+        try {
+            Log.finishLog();
+            TelaLogin telaLogin = new TelaLogin();
+            telaLogin.show();
+            dispose();
+        } catch (IOException ex) {
+            Logger.getLogger(TelaAdminConfg.class.getName()).log(Level.SEVERE, "ERRO AO FINALIZAR APLICAÇÃO", ex);
+        }
     }//GEN-LAST:event_lblSairMouseClicked
 
     private void lblDashMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDashMouseEntered

@@ -1,65 +1,66 @@
 package infoMaquina;
 
 import conexao.ConexaoBD;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- *
- * @author Gabriel Bezerra
- */
 public class Leituras {
-    ConexaoBD config = new ConexaoBD();
-    Connection con;
-    Statement stmt;
-    DecimalFormat df = new DecimalFormat("#.##");
-    Memoria mem = new Memoria();
-    Cpu cpu = new Cpu();
-    Cpu teste = new Cpu();
 
-    public Leituras() throws SQLException {
-        this.con = DriverManager.getConnection(config.conexao());
-        this.stmt = con.createStatement();
+    private Map<Integer, Integer> SetupMaquina_idSetupMaquina;
+
+    public Leituras() {
+        this.SetupMaquina_idSetupMaquina = new HashMap<Integer, Integer>();
     }
     
-    public String getHostname() throws IOException{
-        Process proc = Runtime.getRuntime().exec("hostname");  
-        BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        return stdInput.readLine();
-    }
-    
-    public String formatMemoria(Double mem){
-        return df.format(mem).replace(',', '.');
-    }
-    
-    public String formatCpu(Double cpu){
-        return df.format(cpu).replace(',', '.');
-    }
-    
-    private Integer getIdSetupMaquina() throws IOException, SQLException{
+    public void insertLeitura(String componente, Double valorLeitura) throws SQLException{
+        conexao.ConexaoBD con = new ConexaoBD();
         
+        Integer erroLeitura = 0;
+        Integer idSetupMaquina = 0;
         
-        ResultSet hostname = stmt.executeQuery(String.format("SELECT idSetupMaquina FROM [dbo].[SetupMaquina] WHERE Maquina_idMaquina = (SELECT idMaquina FROM [dbo].[Maquina] WHERE hostnameMaquina = '%s')", getHostname()));
-        Integer maquina = null;
-        
-        while(hostname.next()){
-            maquina = hostname.getInt("idSetupMaquina");
+        switch (componente.toUpperCase()) {
+            case "CPU":
+                idSetupMaquina = SetupMaquina_idSetupMaquina.get(600);
+                break;
+            case "DISCO":
+                idSetupMaquina = SetupMaquina_idSetupMaquina.get(601);
+                break;
+            case "MEMORIA":
+                idSetupMaquina = SetupMaquina_idSetupMaquina.get(603);
+                break;
+            default:
+                break;
         }
-        return maquina;
+        
+        if(valorLeitura > 80){
+            erroLeitura = 1;
+        }
+        
+        String insert = String.format("INSERT INTO [dbo].[Leitura] VALUES ('%s', %d, GETDATE(), %d)",
+                formatLeitura(valorLeitura), idSetupMaquina, erroLeitura);
+        
+        con.getStmt().execute(insert);
     }
     
-    public Boolean insertMem(String mem) throws IOException, SQLException{
-       return stmt.execute(String.format("INSERT INTO [dbo].[Leitura](valorLeitura, SetupMaquina_idSetupMaquina) VALUES (%s, %d);", mem, getIdSetupMaquina())); 
-    } 
+    public void idSetupMaquina(Integer funcionario) throws SQLException{
+        conexao.ConexaoBD con = new ConexaoBD();
+        String select = String.format("SELECT idSetupMaquina, Componentes_idComponentes FROM [dbo].[SetupMaquina] WHERE Maquina_idMaquina = (SELECT idMaquina FROM [dbo].[Maquina] WHERE Funcionario_idFuncionario = %d)", funcionario);
+        ResultSet resultadoSelect = con.getStmt().executeQuery(select);
+        while(resultadoSelect.next()){
+            Integer componente = resultadoSelect.getInt("Componentes_idComponentes");
+            Integer idSetupMaquina = resultadoSelect.getInt("idSetupMaquina");
+            
+            SetupMaquina_idSetupMaquina.put(componente, idSetupMaquina);
+        }
+    }
     
-    public Boolean insertCpu(String cpu) throws IOException, SQLException{
-       return stmt.execute(String.format("INSERT INTO [dbo].[Leitura](valorLeitura, SetupMaquina_idSetupMaquina) VALUES (%s, %d);", cpu, getIdSetupMaquina())); 
-    } 
+    public String formatLeitura(Double dado){
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        return formatter.format(dado).replace(",", ".");
+    }
+    
 }

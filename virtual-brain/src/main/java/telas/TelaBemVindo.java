@@ -5,16 +5,23 @@
  */
 package telas;
 
+import conexao.ConexaoBD;
+import infoMaquina.CadastrarMaquina;
+import infoMaquina.CadastrarMaquinaLinux;
 import infoMaquina.Cpu;
+import infoMaquina.Disco;
 import infoMaquina.Leituras;
+import infoMaquina.Memoria;
+import infoMaquina.SetupMaquina;
+import infoMaquina.SistemaOperacional;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.springframework.jdbc.core.JdbcTemplate;
+import oshi.util.FormatUtil;
 
 /**
  *
@@ -22,20 +29,84 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class TelaBemVindo extends javax.swing.JFrame {
 
+    private final String userAtual;
+    private final Integer func;
+
     /**
      * Creates new form TelaBemVindo
      */
-    public TelaBemVindo() throws SQLException, IOException{
-//        Leituras leitura = new Leituras();
-//        String hostname = leitura.getHostname();
-//        
-//        if (hostname.equals("6811b44a5f14")){
-//            conexao.ConexaoMarise config = new conexao.ConexaoMarise();
-//            JdbcTemplate con = new JdbcTemplate(config.getDatasource());
-//            Cpu cpu = new Cpu();
-//           con.update("INSERT INTO leituras VALUES (null, ? , getdate(), 1)", cpu.usoCpu());
-//        }
+    public TelaBemVindo(String userAtual, Integer func) throws IOException, SQLException {
         initComponents();
+        conexao.ConexaoBD con = new ConexaoBD();
+        SetupMaquina setup = new SetupMaquina();
+        Leituras lt = new Leituras();
+
+        this.userAtual = userAtual;
+        this.func = func;
+
+        CadastrarMaquina userWindows = null;
+        CadastrarMaquinaLinux userLinux = null;
+        SistemaOperacional sistema = new SistemaOperacional();
+        if (sistema.getSistemaOperacional().contains("Microsoft Windows")) {
+            userWindows = new CadastrarMaquina(func);
+        } else {
+            userLinux = new CadastrarMaquinaLinux(func);
+        }
+
+        if (!this.userAtual.equals("")) {
+            String verificacaoMaquinaFuncionario = String.format("SELECT COUNT(*) AS 'Número Total' FROM [dbo].[Funcionario], [dbo].[Maquina] where Funcionario_idFuncionario = %s AND Funcionario_idFuncionario = idFuncionario", func);
+            ResultSet resultadoQuery = con.getStmt().executeQuery(verificacaoMaquinaFuncionario);
+
+            Boolean insert = false;
+
+            while (resultadoQuery.next()) {
+                if (resultadoQuery.getInt("Número Total") == 0) {
+                    insert = true;
+                }
+            }
+            if (insert) {
+                if (userLinux != null) {
+                    userLinux.CadastrarNovaMaquina();
+                } else {
+                    userWindows.CadastrarNovaMaquina();
+                }
+                ResultSet setupIdMaquina = con.getStmt().executeQuery(String.format("SELECT idMaquina FROM [dbo].[Maquina] WHERE Funcionario_IdFuncionario = %d", func));
+                while (setupIdMaquina.next()) {
+                    setup.idMaquina(setupIdMaquina.getInt("idMaquina"));
+                }
+                setup.statusComponentes();
+                setup.componenteIdComponentes("CPU");
+                setup.insertSetupMaquina();
+                setup.componenteIdComponentes("DISCO");
+                setup.insertSetupMaquina();
+                setup.componenteIdComponentes("RAM");
+                setup.insertSetupMaquina();
+                setup.idSetupMaquina();
+            }
+        }
+
+        lt.idSetupMaquina(func);
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Cpu cpu = new Cpu();
+                Memoria mem = new Memoria();
+                Disco disc = new Disco();
+                
+                try {
+                    lt.insertLeitura("CPU", cpu.usoCpu());
+                    lt.insertLeitura("DISCO", Double.valueOf(disc.getDiskPercent(0)));
+                    lt.insertLeitura("MEMORIA", mem.usoMemoria());
+
+                } catch (SQLException | IOException ex) {
+                    Logger.getLogger(TelaBemVindo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }, 0, 3000);
+    }
+
+    private TelaBemVindo() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -121,16 +192,8 @@ public class TelaBemVindo extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new TelaBemVindo().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(TelaBemVindo.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(TelaBemVindo.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new TelaBemVindo().setVisible(true);
         });
     }
 

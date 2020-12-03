@@ -15,6 +15,11 @@ public class Cpu {
         try {
             cpuUsage = (cpu.getSystemCpuLoadBetweenTicks(ticks) * 100);
             ticks = cpu.getSystemCpuLoadTicks();
+            if (cpuUsage > 80) {
+                Log.errosLog("AVISO: ", "CPU ACIMA DE 80% ");
+            }else if (cpuUsage > 60) {
+                Log.errosLog("CRITICO: ", "CPU ACIMA DE 60% ");
+            }
         } catch(Exception e) {
             System.out.println(e);
         }
